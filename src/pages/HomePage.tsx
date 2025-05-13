@@ -41,7 +41,7 @@ const HomePage = () => {
           <div className="hidden md:flex justify-center">
             <div className="relative h-80 w-80 rounded-full overflow-hidden border-4 border-primary/20">
               <img
-                src="/lovable-uploads/c466c900-cfdb-4b15-9b73-568a1691d628.png"
+                src="/lovable-uploads/photo_2025-04-13_00-31-39.jpg"
                 alt="Kobulov Azizbek"
                 className="object-cover h-full w-full"
               />

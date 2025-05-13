@@ -87,20 +87,6 @@ const ContactPage = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-4">
-                  <Github className="h-5 w-5 text-primary mt-0.5" />
-                  <div>
-                    <h3 className="font-medium">Personal Website</h3>
-                    <a 
-                      href="https://azkob.netlify.app/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      https://azkob.netlify.app/
-                    </a>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
