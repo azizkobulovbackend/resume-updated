@@ -14,80 +14,59 @@ const ContactPage = () => {
     email: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [telegramToken, setTelegramToken] = useState(() => 
-    localStorage.getItem('telegram_bot_token') || ''
-  );
-  const [telegramChatId, setTelegramChatId] = useState(() => 
-    localStorage.getItem('telegram_chat_id') || ''
-  );
   const [showConfig, setShowConfig] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
 
-  const handleConfigChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name === 'token') {
-      setTelegramToken(value);
-      localStorage.setItem('telegram_bot_token', value);
-    } else if (name === 'chatId') {
-      setTelegramChatId(value);
-      localStorage.setItem('telegram_chat_id', value);
-    }
-  };
+  const TELEGRAM_BOT_TOKEN = "7851512988:AAFfxeHglMkz0t8Wljh9MrhuBQqHkD46IWQ"; // Replace with your bot token
+  const TELEGRAM_CHAT_ID = "975060358"; // Replace with your chat/user/group ID
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  
 
   const sendToTelegram = async () => {
-    if (!telegramToken || !telegramChatId) {
-      toast({
-        title: "Configuration missing",
-        description: "Please set up your Telegram bot token and chat ID first.",
-        variant: "destructive",
-      });
-      setShowConfig(true);
-      return false;
-    }
-    
-    try {
-      const messageText = `
-📧 New message from portfolio website!
+  try {
+    const messageText = `
+📬 <b>New Message from Portfolio</b>
 
-👤 Name: ${formData.name}
-📧 Email: ${formData.email}
-💬 Message: ${formData.message}
-      `;
-      
-      const response = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: telegramChatId,
-          text: messageText,
-          parse_mode: 'HTML'
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (!data.ok) {
-        throw new Error(data.description || 'Failed to send message to Telegram');
-      }
-      
-      return true;
-    } catch (error) {
-      console.error('Error sending message to Telegram:', error);
-      toast({
-        title: "Failed to send to Telegram",
-        description: "There was an error sending your message to Telegram. Please try again later.",
-        variant: "destructive",
-      });
-      return false;
+👤 <b>Name:</b> ${formData.name}
+📧 <b>Email:</b> ${formData.email}
+💬 <b>Message:</b> ${formData.message}
+    `.trim();
+
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: messageText,
+        parse_mode: 'HTML',
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!data.ok) {
+      throw new Error(data.description || 'Failed to send message to Telegram');
     }
-  };
+
+    return true;
+  } catch (error) {
+    console.error('Telegram Error:', error);
+    toast({
+      title: "Telegram Error",
+      description: "Could not send your message to Telegram. Check bot token/chat ID.",
+      variant: "destructive",
+    });
+    return false;
+  }
+};
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,62 +151,7 @@ const ContactPage = () => {
               </CardContent>
             </Card>
             
-            {/* Telegram Configuration Card */}
-            {showConfig && (
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Telegram Configuration</CardTitle>
-                  <CardDescription>
-                    Enter your Telegram bot token and chat ID to receive messages
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label htmlFor="token" className="text-sm font-medium">
-                        Bot Token
-                      </label>
-                      <Input
-                        id="token"
-                        name="token"
-                        value={telegramToken}
-                        onChange={handleConfigChange}
-                        placeholder="1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                        type="password"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Get this from @BotFather on Telegram
-                      </p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <label htmlFor="chatId" className="text-sm font-medium">
-                        Chat ID
-                      </label>
-                      <Input
-                        id="chatId"
-                        name="chatId"
-                        value={telegramChatId}
-                        onChange={handleConfigChange}
-                        placeholder="123456789"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Your Telegram user ID or group chat ID
-                      </p>
-                    </div>
-                    
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => setShowConfig(false)}
-                      className="mt-2"
-                    >
-                      Hide Configuration
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+          
           </div>
           
           {/* Contact Form */}
